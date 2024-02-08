@@ -2,7 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import { useState } from 'react';
 
 
-const kanbanSlice = createSlice({
+
+
+// let LS_tasks = JSON.parse(localStorage.getItem("LS-tasks") as any );
+
+
+
+const kanbanSlice:any = createSlice({
     
 initialState:{
     tasks:[]
@@ -12,23 +18,37 @@ reducers:{
 
     _addTask:(state:any,action:any)=>{
 
-let rawData = localStorage.getItem("tasks");
-let tasks = JSON.parse(rawData as any);
 
-if(tasks){
+     if(Array.isArray(action.payload)){
+         
+         state.tasks = action.payload 
+        
+        }
+        else if (!Array.isArray(action.payload)){
+            
+            state.tasks = [...state.tasks,action.payload];
+            
+            localStorage.setItem("LS-tasks",JSON.stringify(state.tasks));
+            
+        };
 
-  let readyArr = [...tasks,action.payload];
-  
-  localStorage.setItem("tasks",JSON.stringify(readyArr));
+    },
 
-}
 
-  
+    _removeTask:(state:any,action:any)=>{
+
+        let filteredArr = state.tasks.filter((e:any,i:number)=> i !== action.payload );
+        
+        state.tasks = filteredArr;
+
+        localStorage.setItem("LS-tasks",JSON.stringify(state.tasks));
+
     }
+
 }
 
 });
 
 
 export default kanbanSlice.reducer;
-export const {_addTask} = kanbanSlice.actions
+export const {_addTask,_removeTask} = kanbanSlice.actions

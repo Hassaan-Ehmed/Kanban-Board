@@ -17,6 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { _addTask } from "../../redux/slices/kanban-board";
 
+
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 //     palette:{
@@ -44,19 +45,18 @@ const storeState = useAppSelector( state => state.kanban );
  
     );
 
-const [inputTexts,setInputTexts] = React.useReducer(
+const [formData,setFormData] = React.useReducer(
     
     (state:any,newState:any) => ({...state,...newState}),
     
     {title:"",desc:"",name:""}
 )
 
-// const [tasks,setTasks] = React.useState<any>([]);
 
 
 // React.useEffect(()=>{
 
-//     if(!inputTexts.title.trim()){
+//     if(!formData.title.trim()){
 
 //         setFieldsError({titleError:true})
 //     }else{
@@ -65,27 +65,41 @@ const [inputTexts,setInputTexts] = React.useReducer(
 //     }
 
 
-// },[inputTexts.title, inputTexts.desc, inputTexts.name])
+// },[formData.title, formData.desc, formData.name])
 
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    inputTexts.title === "" ? setFieldsError({titleError:true}) : setFieldsError({titleError:false})
-    inputTexts.desc === "" ? setFieldsError({descError:true}) : setFieldsError({descError:false})
-    inputTexts.name === "" ? setFieldsError({nameError:true}) : setFieldsError({nameError:false})
+    formData.title === "" ? setFieldsError({titleError:true}) : setFieldsError({titleError:false})
+    formData.desc === "" ? setFieldsError({descError:true}) : setFieldsError({descError:false})
+    formData.name === "" ? setFieldsError({nameError:true}) : setFieldsError({nameError:false})
     
 
-if(inputTexts.title && inputTexts.desc && inputTexts.name){
+if(formData.title && formData.desc && formData.name){
 
-  dispatch(_addTask(inputTexts));
-  
-    setInputTexts({title:"",desc:"",name:""});
+
+  // Preparing date packet to display
+let month = new Intl.DateTimeFormat('en',{month:"short"}).format();
+let day = new Intl.DateTimeFormat('en',{day:"2-digit"}).format();
+let year = new Intl.DateTimeFormat('en',{year:"numeric"}).format();
+
+let datePacket = {  month, day, year };
+
+
+const updatedFormData = {
+  ...formData,
+  date: datePacket
+}
+
+dispatch(_addTask(updatedFormData as any))
+
+    setFormData({title:"",desc:"",name:""});
+
 
   }
     
 };
-
 
 
   return (
@@ -110,7 +124,7 @@ if(inputTexts.title && inputTexts.desc && inputTexts.name){
             sx={{ mt: 1 }}
           >
             <TextField
-            value={inputTexts.title}
+            value={formData.title}
               margin="normal"
               required
               fullWidth
@@ -120,10 +134,10 @@ if(inputTexts.title && inputTexts.desc && inputTexts.name){
               autoFocus
              error={fieldsError.titleError ? true : false}
               helperText={fieldsError.titleError && "Field should not be empty"}
-              onChange={e => setInputTexts({title:e.target.value})}
+              onChange={e => setFormData({title:e.target.value})}
             />
             <TextField
-            value={inputTexts.desc}
+            value={formData.desc}
               margin="normal"
               required
               fullWidth
@@ -136,11 +150,11 @@ if(inputTexts.title && inputTexts.desc && inputTexts.name){
                 
               helperText={ fieldsError.descError && "Field should not be empty" }
            
-           onChange={ e => setInputTexts( { desc: e.target.value } ) }
+           onChange={ e => setFormData( { desc: e.target.value } ) }
 
            />
             <TextField
-            value={inputTexts.name}
+            value={formData.name}
               margin="normal"
               required
               fullWidth
@@ -152,7 +166,7 @@ if(inputTexts.title && inputTexts.desc && inputTexts.name){
               error={ fieldsError.nameError ? true : false}
               helperText={ fieldsError.nameError && "Field should not be empty"}
 
-              onChange={ e => setInputTexts( { name: e.target.value } ) }
+              onChange={ e => setFormData( { name: e.target.value } ) }
             />
 
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>

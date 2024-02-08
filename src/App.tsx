@@ -5,24 +5,49 @@ import Heading from './components/Heading';
 import Form from './components/Form';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { _addTask } from './redux/slices/kanban-board';
+import Board from './components/Board';
+
 
 function App() {
  
-const storeState = useAppSelector(  state => state.kanban );
- 
-let data = localStorage.getItem("tasks");
-let tasks = JSON.parse(data as any);
+const storeState = useAppSelector( state => state.kanban );
+ const dispatch = useAppDispatch();
 
-console.log(storeState.tasks);
+useEffect(()=>{
 
+let LS_tasks = JSON.parse(localStorage.getItem("LS-tasks") as any);
+
+if(LS_tasks === null){
+  
+  localStorage.setItem("LS-tasks",JSON.stringify([]) as any);
+
+}
+else if( LS_tasks !== null){
+
+    dispatch(_addTask(LS_tasks))
+
+}
+
+},[]);
 
  return (
 
 <div className="App">
 
 <Heading  text={'Kanban Board'}/>
+<div style={{
+  width:"100%",
+  padding:"20px",
+backgroundColor:"rebeccapurple",
+display:"flex",
+justifyContent:"space-around",
+alignItems:"center"}}>
 
 <Form/>
+<Board/>
+
+</div>
+
 
 </div>
   );
