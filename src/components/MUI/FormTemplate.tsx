@@ -1,21 +1,16 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 // import SendIcon from "@mui/icons-material/Send";
-import AddIcon from '@mui/icons-material/Add';
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { _addTask } from "../../redux/slices/kanban-board";
+import { _addTaskInBacklog } from "../../redux/slices/kanban-board";
+import { getCurrentDate } from "../../utils/helperFunctions";
+import { Divider } from "@mui/material";
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -32,7 +27,7 @@ const defaultTheme = createTheme();
 
 // });
 
-export default function Formm({ buttonTxt }: any) {
+export default function Formm({ buttonTxt,onClose }: any) {
   
 const dispatch = useAppDispatch();
 const storeState = useAppSelector( state => state.kanban );
@@ -79,28 +74,23 @@ const [formData,setFormData] = React.useReducer(
 if(formData.title && formData.desc && formData.name){
 
 
-  // Preparing date packet to display
-let month = new Intl.DateTimeFormat('en',{month:"short"}).format();
-let day = new Intl.DateTimeFormat('en',{day:"2-digit"}).format();
-let year = new Intl.DateTimeFormat('en',{year:"numeric"}).format();
-
-let datePacket = {  month, day, year };
-
+  let datePacket = getCurrentDate()
 
 const updatedFormData = {
   ...formData,
   date: datePacket
 }
 
-dispatch(_addTask(updatedFormData as any))
+dispatch(_addTaskInBacklog(updatedFormData as any))
 
     setFormData({title:"",desc:"",name:""});
+    onClose();
 
 
   }
-    
-};
 
+
+};
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -158,7 +148,7 @@ dispatch(_addTask(updatedFormData as any))
               margin="normal"
               required
               fullWidth
-              id="  "
+              id="name"
               label="Created by"
               name="uname"
               autoFocus
@@ -169,6 +159,7 @@ dispatch(_addTask(updatedFormData as any))
               onChange={ e => setFormData( { name: e.target.value } ) }
             />
 
+<Divider sx={{marginTop:"10px"}}/>
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
               {buttonTxt}
             </Button>

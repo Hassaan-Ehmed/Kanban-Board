@@ -4,27 +4,65 @@ import './App.css';
 import Heading from './components/Heading';
 import Form from './components/Form';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
-import { _addTask } from './redux/slices/kanban-board';
-import Board from './components/Board';
-
+import { _addTaskInBacklog, _setTaskInDoing, _setTaskInDone, _setTaskInReview } from './redux/slices/kanban-board';
+import Backlog_Board from './components/Backlog_Board';
+import Doing_Board from './components/Doing_Board';
+import Review_Board from './components/Review_Board';
+import Done_Board from './components/Done_Board';
+import Dialogg from './components/MUI/Dialog';
 
 function App() {
  
-const storeState = useAppSelector( state => state.kanban );
+const storeState:any = useAppSelector( state => state.kanban );
  const dispatch = useAppDispatch();
 
 useEffect(()=>{
 
-let LS_tasks = JSON.parse(localStorage.getItem("LS-tasks") as any);
+let LS_Backlog = JSON.parse(localStorage.getItem("LS-Backlog") as any);
+let LS_Doing = JSON.parse(localStorage.getItem("LS-Doing") as any);
+let LS_Review = JSON.parse(localStorage.getItem("LS-Review") as any);
+let LS_Done = JSON.parse(localStorage.getItem("LS-Done") as any);
 
-if(LS_tasks === null){
+// Mounting Logic for Backlog 
+if(LS_Backlog === null ){
   
-  localStorage.setItem("LS-tasks",JSON.stringify([]) as any);
+  localStorage.setItem("LS-Backlog",JSON.stringify([]) as any);
+  
+}
+else if( LS_Backlog !== null){
+
+    dispatch(_addTaskInBacklog(LS_Backlog));  
 
 }
-else if( LS_tasks !== null){
 
-    dispatch(_addTask(LS_tasks))
+// Mounting Logic for Doing 
+if (LS_Doing === null){
+  
+  localStorage.setItem("LS-Doing",JSON.stringify([]) as any);
+}
+else if (LS_Doing !== null){
+
+  dispatch(_setTaskInDoing(LS_Doing));
+
+}
+
+// Mounting Logic for Review 
+if (LS_Review === null){
+  
+  localStorage.setItem("LS-Review",JSON.stringify([]) as any);
+}else if(LS_Review !== null){
+
+dispatch(_setTaskInReview(LS_Review));
+
+}
+
+// Mounting Logic for Done
+if(LS_Done === null){
+
+  localStorage.setItem("LS-Done",JSON.stringify([]) as any);
+}else if(LS_Done !== null){
+ 
+dispatch(_setTaskInDone(LS_Done));
 
 }
 
@@ -38,15 +76,19 @@ else if( LS_tasks !== null){
 <div style={{
   width:"100%",
   padding:"20px",
-backgroundColor:"rebeccapurple",
 display:"flex",
-justifyContent:"space-around",
-alignItems:"center"}}>
+justifyContent:"center",
+alignItems:"center",
+gap:"50px"
+}}>
 
-<Form/>
-<Board/>
+<Backlog_Board />
+<Doing_Board />
+<Review_Board/>
+<Done_Board/>
 
 </div>
+
 
 
 </div>
