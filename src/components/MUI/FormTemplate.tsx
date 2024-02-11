@@ -9,7 +9,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 // import SendIcon from "@mui/icons-material/Send";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { _addTaskInBacklog } from "../../redux/slices/kanban-board";
-import { getCurrentDate } from "../../utils/helperFunctions";
+import {  getCurrentTimeStamp } from "../../utils/helperFunctions";
 import { Divider } from "@mui/material";
 
 
@@ -73,12 +73,11 @@ const [formData,setFormData] = React.useReducer(
 
 if(formData.title && formData.desc && formData.name){
 
-
-  let datePacket = getCurrentDate()
+  let timeStamp  = getCurrentTimeStamp();
 
 const updatedFormData = {
   ...formData,
-  date: datePacket
+  timeStamp:timeStamp
 }
 
 dispatch(_addTaskInBacklog(updatedFormData as any))

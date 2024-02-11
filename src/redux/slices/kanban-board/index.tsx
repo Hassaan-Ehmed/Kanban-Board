@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useState } from 'react';
-import { getCurrentDate } from '../../../utils/helperFunctions';
+import { getCurrentTimeStamp} from '../../../utils/helperFunctions';
 
 
 const kanbanSlice:any = createSlice({
@@ -39,14 +39,14 @@ reducers:{
         
         let removeByBacklog = state.backlog_tasks.filter( (_:any,i:number)=> i === action.payload );
 
-        let datePacket = getCurrentDate();
+        let timeStamp = getCurrentTimeStamp();
 
         let removeByBacklog_UPDATED = {
             
             // i filter removeable item and update his date to current date so when i filter he gives me 
             //that object but in array bcz filter() method returns an array so i target first index [also we have only one index ]
             ...removeByBacklog[0],
-            date:datePacket
+            timeStamp : timeStamp
         }
         
         state.doing_tasks = [...state.doing_tasks,removeByBacklog_UPDATED];
@@ -66,18 +66,18 @@ reducers:{
     },
 
 
-    _removeTaskFromDoing:(state:any,action:any)=>{
+    _removeTaskFromDoing:(state:any,action:any)=>{  
 
         let filteredArr = state.doing_tasks.filter((_:any,i:number)=> i !== action.payload);
         
         let removeByDoing = state.doing_tasks.filter((_:any,i:number)=> i === action.payload);
 
 
-        let datePacket = getCurrentDate();
+        let timeStamp = getCurrentTimeStamp();
 
         let removeByDoing_UPDATED = {
             ...removeByDoing[0],
-            date:datePacket
+         timeStamp :timeStamp
         }
 
 
@@ -104,7 +104,14 @@ state.doing_tasks = filteredArr
 
                 state.review_tasks = filteredArr;
 
-            state.doing_tasks = [...state.doing_tasks,backToDoing[0]];
+let timeStamp = getCurrentTimeStamp();
+
+let backToDoing_UPDATED = {
+    ...backToDoing[0],
+    timeStamp:timeStamp
+}
+
+            state.doing_tasks = [...state.doing_tasks,backToDoing_UPDATED];
 
             localStorage.setItem("LS-Doing",JSON.stringify(state.doing_tasks));
             localStorage.setItem("LS-Review",JSON.stringify(state.review_tasks));
@@ -119,12 +126,12 @@ state.doing_tasks = filteredArr
         let removeFromReview = state.review_tasks.filter((_:any,i:number)=> i === action.payload);
 
 
-        let datePacket = getCurrentDate();
+       let timeStamp = getCurrentTimeStamp();
 
         let removeFromReview_UPDATED = {
 
             ...removeFromReview[0],
-            date:datePacket
+            timeStamp:timeStamp
         }
 
 

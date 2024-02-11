@@ -30,7 +30,8 @@ export default function Done_Board() {
     borderRadius:"10px",
     overflow:"auto",
   display:"flex",
-  flexDirection:"column"
+  flexDirection:"column",
+  position:"relative",
     }}>
         
 <div style={{
@@ -39,7 +40,10 @@ export default function Done_Board() {
    backgroundColor:"#5ae4f6",
     display:"flex",
     justifyContent:"center",
-    alignItems:"center"
+    alignItems:"center",
+    position:"sticky",
+    top:0,
+    zIndex:2
 }}>
 
 <p style={{
@@ -61,7 +65,7 @@ export default function Done_Board() {
  maxWidth: "20vw",
   bgcolor: "background.paper" ,
   borderRadius:"10px",
-  boxShadow:"-32px 0px 75px -47px black",
+  boxShadow:"-2px 9px 19px -14px black",
   alignSelf:"center",
   marginTop:"10px",
   border:"1px solid black"
@@ -131,7 +135,7 @@ whiteSpace:"nowrap"
      <ListItemText
        primary={
 <>
-<strong>Date: </strong>{task.date.month} {task.date.day} {task.date.year}
+<strong>Time Stamp: </strong>{task.timeStamp}
 </>
 
        }
