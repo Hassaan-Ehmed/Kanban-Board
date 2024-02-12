@@ -8,6 +8,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 export default function Review_Board() {
 
@@ -18,6 +19,47 @@ export default function Review_Board() {
     const tasks = storeState.review_tasks
 
     console.table(tasks);
+
+//  BY DOING
+    const handleDragOverByDoing=(event:any)=>{
+
+      event.preventDefault()
+
+      console.log("DRAG OVER...")
+
+    }
+
+
+    const handleDroppedByDoing=(event:any)=>{
+
+event.preventDefault();
+
+
+if(event.dataTransfer.getData("doingItem") !== ''){
+
+
+  let index = parseInt(event.dataTransfer.getData("doingItem"));
+  
+  dispatch(_removeTaskFromDoing(index));
+  
+  
+  event.dataTransfer.setData("doingItem",'');
+  
+}
+
+}
+
+
+    //  ON REVIEW
+
+    const handleDragsStartOnReview = (event:any,index:number)=>{
+
+      event.dataTransfer.setData("reviewItem",index);
+
+    }
+
+
+
 
   return (
     <>
@@ -30,7 +72,13 @@ export default function Review_Board() {
   display:"flex",
   flexDirection:"column",
   position:'relative'
-    }}>
+    }}
+
+    onDragOver={(e)=>handleDragOverByDoing(e)}
+
+    onDrop={(e)=>handleDroppedByDoing(e)}
+    
+    >
         
 <div style={{
   width:"100%",
@@ -41,7 +89,7 @@ export default function Review_Board() {
     alignItems:"center",
     position:"sticky",
     top:0,
-    zIndex:10
+    zIndex:1000
 }}>
 
 <p style={{
@@ -67,7 +115,26 @@ export default function Review_Board() {
   alignSelf:"center",
   marginTop:"10px",
   border:"1px solid black"
-  }} >
+  }} 
+  
+  draggable={true} onDragStart={(e)=>handleDragsStartOnReview(e,index)}
+  >
+
+<div style={{
+  width:"fit-content",
+  cursor:"grab",
+  marginLeft:"auto",
+  marginRight:"5px",
+position:"absolute",
+top:10,
+right:10,
+zIndex:999
+}}
+
+>
+  <DragIndicatorIcon/>
+
+</div>
 
    <ListItem alignItems="flex-start">
      <ListItemText
@@ -131,7 +198,8 @@ whiteSpace:"nowrap"
      <ListItemText
        primary={
 <>
-<strong>Time Stamp: </strong>{task.timeStamp}
+<strong >Created   at: </strong> 
+<span style={{fontSize:"0.9vw",color:"red"}}> <b>{task.timeStamp}</b></span>
 </>
 
        }

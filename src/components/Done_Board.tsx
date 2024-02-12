@@ -9,6 +9,7 @@ import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Button } from '@mui/material';
+import { _goToDone } from '../redux/slices/kanban-board';
 
 
 export default function Done_Board() {
@@ -19,6 +20,32 @@ export default function Done_Board() {
 
     const tasks = storeState.done_tasks ?? [];
     console.table(tasks);
+
+
+// BY REVIEW
+const handleDragOverByReview=(event:any)=>{
+
+  event.preventDefault();
+}
+
+
+
+const handleDroppedByReview=(event:any)=>{
+
+
+  if(event.dataTransfer.getData("reviewItem") !== ''){
+
+    let index = parseInt(event.dataTransfer.getData("reviewItem"));
+
+
+    dispatch(_goToDone(index));
+
+    event.dataTransfer.setData("reviewItem",'');
+  }
+
+}
+
+
 
   return (
 <>
@@ -32,7 +59,12 @@ export default function Done_Board() {
   display:"flex",
   flexDirection:"column",
   position:"relative",
-    }}>
+    }}
+    
+    onDragOver={(e)=>handleDragOverByReview(e)}
+    onDrop={(e)=>handleDroppedByReview(e)}
+    
+    >
         
 <div style={{
   width:"100%",
@@ -43,7 +75,7 @@ export default function Done_Board() {
     alignItems:"center",
     position:"sticky",
     top:0,
-    zIndex:2
+    zIndex:1000
 }}>
 
 <p style={{
@@ -70,6 +102,8 @@ export default function Done_Board() {
   marginTop:"10px",
   border:"1px solid black"
   }} >
+
+    
 
    <ListItem alignItems="flex-start">
      <ListItemText
@@ -135,7 +169,9 @@ whiteSpace:"nowrap"
      <ListItemText
        primary={
 <>
-<strong>Time Stamp: </strong>{task.timeStamp}
+<strong >Created at: </strong> 
+                <span style={{fontSize:"0.9vw",color:"red"}}> <b>{task.timeStamp}</b></span>
+                
 </>
 
        }

@@ -1,13 +1,13 @@
 import { Box, Button } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { _removeTaskFromBacklog, _removeTaskFromDoing } from '../redux/slices/kanban-board';
+import { _backToDoing, _removeTaskFromBacklog, _removeTaskFromDoing } from '../redux/slices/kanban-board';
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 export default function Doing_Board() {
 
@@ -16,8 +16,61 @@ export default function Doing_Board() {
     const dispatch = useAppDispatch();
 
     const tasks = storeState.doing_tasks ?? []
-
     console.table(tasks);
+
+
+    //  BY BACKLOG
+const handleDragOverByBacklog = (event:any)=>
+    {
+      event.preventDefault();
+
+    }
+
+
+const handleDroppedByBacklog = (event:any)=>  
+    {
+      event.preventDefault();
+      
+      if(event.dataTransfer.getData("backlogItem") !== ''){
+
+    let index = parseInt(event.dataTransfer.getData("backlogItem"));
+    
+    dispatch(_removeTaskFromBacklog(index));  
+    
+       event.dataTransfer.setData("backlogItem",'');
+
+      }else if(event.dataTransfer.getData("reviewItem") !== ''){
+     
+     let index = parseInt(event.dataTransfer.getData("reviewItem"));
+
+     dispatch(_backToDoing(index));
+
+     event.dataTransfer.setData("reviewItem",'');
+     
+    } 
+
+    }
+
+
+    /// ON DOING 
+
+const handleDragStartOnDoing = (event:any,index:number)=>{
+
+  event.dataTransfer.setData("doingItem",index);
+}
+
+
+
+// BY REVIEW
+
+const handleDragOverByReview=(event:any)=>{
+}
+
+
+
+const handleDroppedByReview=(event:any)=>{
+
+}
 
   return (
     <>
@@ -30,7 +83,13 @@ export default function Doing_Board() {
   display:"flex",
   flexDirection:"column",
   position:"relative"
-    }}>
+    }}
+    
+    onDragOver={(e)=>handleDragOverByBacklog(e)}
+
+    onDrop={(e)=>handleDroppedByBacklog(e)}
+    
+    >
         
 <div style={{
   width:"100%",
@@ -41,7 +100,7 @@ export default function Doing_Board() {
     alignItems:"center",
     position:"sticky",
     top:0,
-    zIndex:2
+    zIndex:1000
 }}>
 
 <p style={{
@@ -67,7 +126,27 @@ export default function Doing_Board() {
   alignSelf:"center",
   marginTop:"10px",
   border:"1px solid black"
-  }} >
+  }} 
+  
+  
+draggable={true} onDragStart={(e)=>handleDragStartOnDoing(e,index)}
+  >
+
+<div style={{
+  width:"fit-content",
+  cursor:"grab",
+  marginLeft:"auto",
+  marginRight:"5px",
+position:"absolute",
+top:10,
+right:10,
+zIndex:999
+}}
+
+>
+  <DragIndicatorIcon/>
+
+</div>
 
    <ListItem alignItems="flex-start">
      <ListItemText
@@ -112,7 +191,7 @@ whiteSpace:"nowrap"
      <ListItemText
        primary={
          <>
-         <strong>Created by: </strong> {task.name ?? "---"}
+         <strong >Created by: </strong> {task.name ?? "---"}
          </>
        }
 
@@ -131,8 +210,9 @@ whiteSpace:"nowrap"
      <ListItemText
        primary={
 <>
-<strong>Time Stamp: </strong>{task.timeStamp}
-</>
+<strong >Created at: </strong> 
+                <span style={{fontSize:"0.9vw",color:"red"}}> <b>{task.timeStamp}</b></span>
+</>  
 
        }
 

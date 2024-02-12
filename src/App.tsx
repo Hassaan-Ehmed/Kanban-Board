@@ -10,6 +10,7 @@ import Doing_Board from './components/Doing_Board';
 import Review_Board from './components/Review_Board';
 import Done_Board from './components/Done_Board';
 import Dialogg from './components/MUI/Dialog';
+import Accordionn from './components/MUI/Accordion';
 
 function App() {
  
@@ -82,7 +83,7 @@ alignItems:"center",
 gap:"50px"
 }}>
 
-<Backlog_Board />
+ <Backlog_Board />
 <Doing_Board />
 <Review_Board/>
 <Done_Board/>
@@ -90,8 +91,9 @@ gap:"50px"
 </div>
 
 
-
 </div>
+
+
   );
 }
 

@@ -25,7 +25,7 @@ const formattedStamp = now.toLocaleDateString('en-US',{
 day:'2-digit',
 month:'2-digit',
 year:'2-digit',
-}) + ' ~ ' + now.toLocaleTimeString('en-US',{
+}) +' ~ '+ now.toLocaleTimeString('en-US',{
    hour:'2-digit',
    minute:'2-digit',
    second:'2-digit' 

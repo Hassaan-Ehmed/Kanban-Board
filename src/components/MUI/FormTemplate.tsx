@@ -85,7 +85,6 @@ dispatch(_addTaskInBacklog(updatedFormData as any))
     setFormData({title:"",desc:"",name:""});
     onClose();
 
-
   }
 
 
