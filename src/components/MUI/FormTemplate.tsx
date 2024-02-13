@@ -9,9 +9,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 // import SendIcon from "@mui/icons-material/Send";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { _addTaskInBacklog } from "../../redux/slices/kanban-board";
-import {  getCurrentTimeStamp } from "../../utils/helperFunctions";
+import { getCurrentTimeStamp } from "../../utils/helperFunctions";
 import { Divider } from "@mui/material";
-
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -27,83 +26,75 @@ const defaultTheme = createTheme();
 
 // });
 
-export default function Formm({ buttonTxt,onClose }: any) {
-  
-const dispatch = useAppDispatch();
-const storeState = useAppSelector( state => state.kanban );
+export default function Formm({ buttonTxt, onClose }: any) {
+  const dispatch = useAppDispatch();
+  const storeState = useAppSelector((state) => state.kanban);
 
-    const [fieldsError, setFieldsError] = React.useReducer(
+  const [fieldsError, setFieldsError] = React.useReducer(
+    (state: any, newState: any) => ({ ...state, ...newState }),
 
-    (state: any, newState: any) => ({ ...state, ...newState }) ,
+    { titleError: false, descError: false, nameError: false }
+  );
 
-    { titleError: false, descError: false, nameError: false, }
- 
-    );
+  const [formData, setFormData] = React.useReducer(
+    (state: any, newState: any) => ({ ...state, ...newState }),
 
-const [formData,setFormData] = React.useReducer(
-    
-    (state:any,newState:any) => ({...state,...newState}),
-    
-    {title:"",desc:"",name:""}
-)
+    { title: "", desc: "", name: "" }
+  );
 
+  // React.useEffect(()=>{
 
+  //     if(!formData.title.trim()){
 
-// React.useEffect(()=>{
+  //         setFieldsError({titleError:true})
+  //     }else{
 
-//     if(!formData.title.trim()){
+  //         setFieldsError({titleError:false})
+  //     }
 
-//         setFieldsError({titleError:true})
-//     }else{
-        
-//         setFieldsError({titleError:false})
-//     }
-
-
-// },[formData.title, formData.desc, formData.name])
-
+  // },[formData.title, formData.desc, formData.name])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    formData.title === "" ? setFieldsError({titleError:true}) : setFieldsError({titleError:false})
-    formData.desc === "" ? setFieldsError({descError:true}) : setFieldsError({descError:false})
-    formData.name === "" ? setFieldsError({nameError:true}) : setFieldsError({nameError:false})
-    
+    formData.title === ""
+      ? setFieldsError({ titleError: true })
+      : setFieldsError({ titleError: false });
+    formData.desc === ""
+      ? setFieldsError({ descError: true })
+      : setFieldsError({ descError: false });
+    formData.name === ""
+      ? setFieldsError({ nameError: true })
+      : setFieldsError({ nameError: false });
 
-if(formData.title && formData.desc && formData.name){
+    if (formData.title && formData.desc && formData.name) {
+      let timeStamp = getCurrentTimeStamp();
 
-  let timeStamp  = getCurrentTimeStamp();
+      const updatedFormData = {
+        ...formData,
+        timeStamp: timeStamp,
+      };
 
-const updatedFormData = {
-  ...formData,
-  timeStamp:timeStamp
-}
+      dispatch(_addTaskInBacklog(updatedFormData as any));
 
-dispatch(_addTaskInBacklog(updatedFormData as any))
-
-    setFormData({title:"",desc:"",name:""});
-    onClose();
-
-  }
-
-
-};
+      setFormData({ title: "", desc: "", name: "" });
+      onClose();
+    }
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs" >
+      <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
-        
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <Typography component="h1" variant="h5"  sx={{pt:2}}>
-           Add Task
+          <Typography component="h1" variant="h5" sx={{ pt: 2 }}>
+            Add Task
           </Typography>
           <Box
             component="form"
@@ -112,7 +103,7 @@ dispatch(_addTaskInBacklog(updatedFormData as any))
             sx={{ mt: 1 }}
           >
             <TextField
-            value={formData.title}
+              value={formData.title}
               margin="normal"
               required
               fullWidth
@@ -120,12 +111,12 @@ dispatch(_addTaskInBacklog(updatedFormData as any))
               label="Title"
               name="title"
               autoFocus
-             error={fieldsError.titleError ? true : false}
+              error={fieldsError.titleError ? true : false}
               helperText={fieldsError.titleError && "Field should not be empty"}
-              onChange={e => setFormData({title:e.target.value})}
+              onChange={(e) => setFormData({ title: e.target.value })}
             />
             <TextField
-            value={formData.desc}
+              value={formData.desc}
               margin="normal"
               required
               fullWidth
@@ -133,31 +124,24 @@ dispatch(_addTaskInBacklog(updatedFormData as any))
               label="Description"
               name="desc"
               autoFocus
-           
-              error={ fieldsError.descError ? true : false}
-                
-              helperText={ fieldsError.descError && "Field should not be empty" }
-           
-           onChange={ e => setFormData( { desc: e.target.value } ) }
-
-           />
+              error={fieldsError.descError ? true : false}
+              helperText={fieldsError.descError && "Field should not be empty"}
+              onChange={(e) => setFormData({ desc: e.target.value })}
+            />
             <TextField
-            value={formData.name}
+              value={formData.name}
               margin="normal"
               required
               fullWidth
               id="name"
               label="Created by"
               name="uname"
-              autoFocus
-  
-              error={ fieldsError.nameError ? true : false}
-              helperText={ fieldsError.nameError && "Field should not be empty"}
-
-              onChange={ e => setFormData( { name: e.target.value } ) }
+              error={fieldsError.nameError ? true : false}
+              helperText={fieldsError.nameError && "Field should not be empty"}
+              onChange={(e) => setFormData({ name: e.target.value })}
             />
 
-<Divider sx={{marginTop:"10px"}}/>
+            <Divider sx={{ marginTop: "10px" }} />
             <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
               {buttonTxt}
             </Button>
